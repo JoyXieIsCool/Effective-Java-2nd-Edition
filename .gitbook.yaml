@@ -1,0 +1,6 @@
+root: ./Effective Java 2nd Edition
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md
+
