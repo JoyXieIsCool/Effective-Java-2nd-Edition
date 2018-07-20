@@ -1,4 +1,4 @@
-本书旨在帮助你最有效地使用Java编程语言和它的基本类库, `Java.lang`, `java.util`, 并且稍微扩展的介绍一下`java.util.concurrent`和`java.io`。本书也会不时地讨论一些其他的库，但不会涉及GUI编程、企业API和移动设备。
+本书旨在帮助你最有效地使用Java编程语言和它的基本类库, `java.lang`, `java.util`, 并且稍微扩展的介绍一下`java.util.concurrent`和`java.io`。本书也会不时地讨论一些其他的库，但不会涉及GUI编程、企业API和移动设备。
 
 本书由78个条目组成，每个条目介绍一条规则，规则中会介绍最有经验的程序员认为有益的实践经验。这些条目松散地分组到了10个章节中，每一章关注软件设计中一个主要的方面。本书并不需要逐页阅读，因为每个条目或多或少都是独立的。这些条目频繁地交叉引用，因此你可以很简单地安排自己的学习计划。  
 
@@ -27,4 +27,24 @@ Java 5中增加了许多新特性，本书中大部分的条目会以某些方�
   
 本书的大部分内容不是讨论性能的，而是关于如何编写清晰、正确、可用、健壮、灵活和可维护的程序。如果你已经能做到这些，通常你也很容易能得到你想要的性能（见条目55）。有些时候也确实讨论到了性能，并且有些条目还提供了性能数据，这些数据一般也都伴随着“在我的机器上”这样的描述，所以最好把它们当作一个近似值。  
 
-下面这个信息也许可以给你参考，我的机器是一个年代久远的家用2.2 GHz 双核AMD Opteron 170处理器，2G内存，在Windows XP专业版SP2系统上运行Sun公司的1.6_05版本的Java SE Development Kit (JDK)。这个JDK有两个虚拟机，分别是Java HotSpot Client版本和Server版，书中的性能数据都是在Server版上运行测试的。
+下面这个信息也许可以给你参考，我的机器是一个年代久远的家用2.2 GHz 双核AMD Opteron<sup>TM</sup> 170处理器，2G内存，在Windows XP专业版SP2系统上运行Sun公司的1.6_05版本的Java SE Development Kit (JDK)。这个JDK有两个虚拟机，分别是Java HotSpot Client版本和Server版，书中的性能数据都是在Server版上运行测试的。
+
+当讨论Java编程语言的特性和它的库时，很有必要提及它的发行版。为了简洁，本书使用“工程版本号”而不是官方发行名。下表列出了这两者之间的对应关系：    
+
+| 官方发行名 | 工程版本号 |  
+| :-- | :-- |  
+| JDK 1.1.x / JRE 1.1.x | 1.1 |
+| Java 2 Platform, Standard Edition, v 1.2 | 1.2 |
+| Java 2 Platform, Standard Edition, v 1.3 | 1.3 |
+| Java 2 Platform, Standard Edition, v 1.4 | 1.4 |
+| Java 2 Platform, Standard Edition, v 5.0 | 1.5 |
+| Java Platform, Standard Edition 6 | 1.6 |
+
+本书的例子是相对完整的，但是相对于完整性，我们更注重可读性。它们大量使用了来自`java.util`和`java.io`包中的类，为了编译这些例子，你也许需要添加一个或多个这这样的导入语句： 
+ 
+```java
+import java.util.*;  import java.util.concurrent.*;import java.io.*;
+```
+
+其他相似的样板代码就不再列出了，本书的站点[http:// java.sun.com/docs/books/effective](http:// java.sun.com/docs/books/effective)包含了每个例子的扩展版本，你可以编译运行它们。 
+
