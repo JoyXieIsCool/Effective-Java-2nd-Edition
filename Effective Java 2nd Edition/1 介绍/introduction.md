@@ -48,3 +48,8 @@ import java.util.*;  import java.util.concurrent.*;import java.io.*;
 
 其他相似的样板代码就不再列出了，本书的站点[http:// java.sun.com/docs/books/effective](http:// java.sun.com/docs/books/effective)包含了每个例子的扩展版本，你可以编译运行它们。 
 
+本书的大部分内容会使用与《The Java Language Specification, Third Edition》一样的技术术语。有一些术语值得特别提及，Java语言支持4种类型：接口(interface，包括注解)，类(class，包括枚举)，数组(array)，基本类型(primitive)。前3种也被称为引用类型，类实例和数组是对象，基本类型的值不是。一个类的成员包含它的属性(fields)，方法(methods)，成员类(member classes)和成员接口(member interfaces)。一个方法的签名(signature)包含它的名字和所有参数类型。签名不包含方法的返回类型。
+
+
+
+
