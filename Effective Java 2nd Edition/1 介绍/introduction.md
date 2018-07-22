@@ -50,6 +50,11 @@ import java.util.*;  import java.util.concurrent.*;import java.io.*;
 
 本书的大部分内容会使用与《The Java Language Specification, Third Edition》一样的技术术语。有一些术语值得特别提及，Java语言支持4种类型：接口(interface，包括注解)，类(class，包括枚举)，数组(array)，基本类型(primitive)。前3种也被称为引用类型，类实例和数组是对象，基本类型的值不是。一个类的成员包含它的属性(fields)，方法(methods)，成员类(member classes)和成员接口(member interfaces)。一个方法的签名(signature)包含它的名字和所有参数类型。签名不包含方法的返回类型。
 
+本书也使用了一些和《The Java Language Specification》不同的术语。跟《The Java Language Specification》不同的是，本书中把继承(inheritance)当作子类化(subclassing)的同义词。本书不再使用接口继承的说法，而是简单地说明一个类实现了(implements)一个接口或者是一个接口继承(extend)了另一个接口。为了说明未指定访问权限时的访问级别，本书使用描述性的术语“包私有”(package-private)而不是技术性的术语“默认访问”(default access)。
 
+本书使用了一些《The Java Language Specification》中没有定义的术语，“导出的API”，或者简单地说API，是指类、接口、构造函数、成员或序列化形式，程序员可以通过它们访问一个类、接口或者包。(术语API是是Application Programming Interface的缩写，使用API而不是接口(interface)，主要是为了避免跟语言中的interface类型混淆)。使用API编程的程序员我们定义为API的用户，一个类的实现中使用了API我们称之为API的客户。
+
+类、接口、构造函数、成员和序列化形式统称为API元素(API 
+element)，一个导出API包含定义了API的包以外可访问的API元素，这些API元素任何客户都可以使用并且API的作者承诺对API做出支持。Javadoc工具在默认的操作模式下也是为它们生成文档，这并不是巧合。不严格地讲，一个包的导出API包括了包里面每一个公有类或者接口中公有的(public)和保护的(protected)成员和构造函数。
 
 
