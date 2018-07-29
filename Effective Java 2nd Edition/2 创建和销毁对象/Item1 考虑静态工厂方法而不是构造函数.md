@@ -36,3 +36,23 @@ public static Boolean valueOf(boolean b) {
 
 当包含静态工厂方法的类在编写时，返回对象的类型甚至不需要存在。这种灵活的静态工厂方法构成了服务提供者框架(Service Provider Framework)的基础，例如Java数据库连接API(JDBC)。一个服务提供者框架是这样的一个系统：多个服务提供者在其中实现了一个服务，系统使得这些实现对客户可用，并且服务从多个实现中解耦。
 
+服务提供者框架有3个基本的组件：服务接口(service interface)，这是提供者要实现的；提供者注册API(provider registration API)，这是系统用来注册实现从而使得客户可以访问；服务访问API(service access API)，客户用来获取服务的实例。服务访问API一般允许用户指定选择提供者的条件，但是不强制要求。如果没有这种指定要求，那么API就返回一个默认实现的实例。服务访问API是“灵活的静态工厂”，它构成了服务提供者框架的基础。
+
+对于服务提供者框架来说，一个可选的第4种组件是服务提供者接口(service provider interface)，提供者实现这个接口来创建服务实现的实例。如果没有一个这样的服务提供者接口，实现的注册要通过类名且使用反射进行初始化(见第53条)。在JDBC的例子中，`Connection`扮演了服务接口的角色，`DriverManager.registerDriver`是提供者注册API，`DriverManager.getConnection`是服务访问API，`Driver`是服务提供者接口。
+
+服务提供者框架模式有各式各样的变体，例如使用适配器模式[Gamma95, p. 139]，服务访问API可以返回比提供者需要的更丰富的服务接口。下面这里是一个简单的实现，使用了服务提供者接口和默认提供者：
+
+```java
+// Service provider framework sketch// 服务接口public interface Service {    ... // 这里是服务制定的方法}
+// 服务提供者接口public interface Provider {    Service newService();}
+// 用于服务注册和访问的不可实例化类public class Services {    private Services() { }  // 防止实例化 (见第4条)    // 把服务名映射到服务上    private static final Map<String, Provider> providers =        new ConcurrentHashMap<String, Provider>();    public static final String DEFAULT_PROVIDER_NAME = "<def>";
+    // 提供者注册API    public static void registerDefaultProvider(Provider p) {        registerProvider(DEFAULT_PROVIDER_NAME, p);	}	public static void registerProvider(String name, Provider p){    	providers.put(name, p);	}
+	// 服务访问API	public static Service newInstance() {    	return newInstance(DEFAULT_PROVIDER_NAME);	}	public static Service newInstance(String name) {    	Provider p = providers.get(name);    	if (p == null)        	throw new IllegalArgumentException(            	"No provider registered with name: " + name);    	return p.newService();	}}
+```
+
+**静态工厂方法的第四个优点是它们降低了创建参数化类型的实例时的冗余语句**。遗憾的是，当你调用参数化类的构造器时必须指定类型参数，即使它们在上下文中已经很清晰了。这通常要求你连续两次提供类型参数：
+
+```java
+Map<String, List<String>> m = new HashMap<String, List<String>>();
+```
+
