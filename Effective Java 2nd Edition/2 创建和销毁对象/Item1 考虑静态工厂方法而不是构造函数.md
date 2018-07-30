@@ -56,3 +56,19 @@ public static Boolean valueOf(boolean b) {
 Map<String, List<String>> m = new HashMap<String, List<String>>();
 ```
 
+随着类型参数长度和复杂度的增加，这种冗余的说明很快就变得十分痛苦。然而使用静态工厂的话，编译器可以帮你解决类型参数，这就是类型推断(type inference)。举个例子，假如`HashMap`提供了这个静态工厂：
+
+```java
+public static <K, V> HashMap<K, V> newInstance() {    return new HashMap<K, V>();}
+```
+
+那么你就可以使用下面这种简明方案替换上文中繁琐的声明：
+
+```java
+Map<String, List<String>> m = HashMap.newInstance();
+```
+
+也许某天Java语言会在构造器调用和方法调用中使用这种类型推断，但是到JDK 1.6版本为止，目前还没有。
+
+不幸的是，像`HashMap`这样的标准集合实现，在发行版1.6中还没有工厂方法，但是你可以把这些方法放到你自己的工具类中。更重要的是，你可以在自己的参数化类中提供这种静态工厂。
+
