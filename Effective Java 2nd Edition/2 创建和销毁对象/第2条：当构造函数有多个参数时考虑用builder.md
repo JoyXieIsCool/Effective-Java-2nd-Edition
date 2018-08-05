@@ -86,3 +86,65 @@ NutritionFacts cocaCola = new NutritionFacts();cocaCola.setServingSize(240);co
 ```
 
 不幸的是，JavaBean模式有它自身的严重缺点。因为构造过程被分到了多个调用中，**一个JavaBean也许会在构造过程中处于一个不一致的状态。**类无法仅仅通过检查构造器参数的有效性来保证一致性。当一个对象处于不一致状态时，企图使用它可能会导致失败，并且这种失败与包含错误的代码远远不同，因此非常难以调试。还有一个相关的缺点是**JavaBean模式阻止了把类变为不可变类的可能性**(见第15条)，并且要求程序员付出额外的努力去保证线程安全。
+
+你可以通过在构造完成时手工地“冻结”对象并且在冻结之前不允许使用的方式来弥补这些缺点，但是这种方式太笨重且在实践中很少使用。此外，它还可能在运行时产生错误，因为编译器没法保证程序员在使用对象之前调用它的冻结方法。 
+
+幸运的是，还有第三种可选方案，它结合了折叠构造器模式的安全性和JavaBean模式的可读性，这就是Builder模式[Gamma95, p. 97]。客户不再直接构造对象，而是使用所有必选参数调用构造器（或静态工厂）得到一个builder对象，然后客户在builder对象上调用类似setter的方法来设置每个他感兴趣的可选参数，最后客户调用一个无参数的`build`方法来创建对象，这个对象是不可变的。builder是创建对象类型的一个静态成员类，下面是它的示例：  
+
+```java
+// Builder模式
+public class NutritionFacts {
+    private final int servingSize;
+    private final int servings;
+    private final int calories;
+    private final int fat;
+    private final int sodium;
+    private final int carbohydrate;
+
+    public static class Builder {
+        // 必选参数
+        private final int servingSize;
+        private final int servings;
+
+        // 可选参数 - 初始化为默认值
+        private int calories      = 0;
+        private int fat           = 0;
+        private int carbohydrate  = 0;
+        private int sodium        = 0;
+
+        public Builder(int servingSize, int servings) {
+            this.servingSize = servingSize;
+            this.servings    = servings;
+        }
+
+        public Builder calories(int val)
+            { calories = val;      return this; }
+        public Builder fat(int val)
+            { fat = val;           return this; }
+        public Builder carbohydrate(int val)
+            { carbohydrate = val;  return this; }
+        public Builder sodium(int val)
+            { sodium = val;        return this; }
+        public NutritionFacts build() {
+            return new NutritionFacts(this);
+        } 
+    }
+
+    private NutritionFacts(Builder builder) {
+        servingSize  = builder.servingSize;
+        servings     = builder.servings;
+        calories     = builder.calories;
+        fat          = builder.fat;
+        sodium       = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    } 
+}
+```
+
+注意`NutritionFacts`是不可变的，并且所有参数的默认值都放在同一个地方。builder的setter方法返回它本身，所以调用可以是链式的。下面是示例代码：  
+
+```java
+NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8).     calories(100).sodium(35).carbohydrate(27).build();
+```
+
+这个客户端代码非常容易编写，更重要的是容易阅读。**Builder模式了命名的可选参数**，就像Ada和Python一样。
