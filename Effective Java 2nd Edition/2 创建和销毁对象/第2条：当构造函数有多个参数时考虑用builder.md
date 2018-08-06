@@ -148,3 +148,7 @@ NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8).     calories(100)
 ```
 
 这个客户端代码非常容易编写，更重要的是容易阅读。**Builder模式了命名的可选参数**，就像Ada和Python一样。
+
+像构造器一样，builder可以给它的参数强加约束条件。build方法可以检查这些约束条件，这是非常重要的，从builder拷贝参数到对象中以后可以被检查是非常重要的，并且它们可以在对象的属性上而不是builder的属性上被检查(见第39条)。如果违反了任何约束条件，`build`方法应该抛出一个`IllegalStateException`异常(见第60条)，且异常的明细应该指出它违反了哪个约束(见第63条)。
+
+另一种对多个参数强加约束条件的方法是让setter方法接收一组参数，组里包含所有要强加约束的所有参数。如果不满足约束，setter方法就抛出一个`IllegalArgumentException`异常。这种方式的优点是当不合法参数被传递时能尽早地检测到，而不需要等待`build`方法被调用。
