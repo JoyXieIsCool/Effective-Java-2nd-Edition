@@ -152,3 +152,16 @@ NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8).     calories(100)
 像构造器一样，builder可以给它的参数强加约束条件。build方法可以检查这些约束条件，这是非常重要的，从builder拷贝参数到对象中以后可以被检查是非常重要的，并且它们可以在对象的属性上而不是builder的属性上被检查(见第39条)。如果违反了任何约束条件，`build`方法应该抛出一个`IllegalStateException`异常(见第60条)，且异常的明细应该指出它违反了哪个约束(见第63条)。
 
 另一种对多个参数强加约束条件的方法是让setter方法接收一组参数，组里包含所有要强加约束的所有参数。如果不满足约束，setter方法就抛出一个`IllegalArgumentException`异常。这种方式的优点是当不合法参数被传递时能尽早地检测到，而不需要等待`build`方法被调用。
+
+builder对比构造器还有一个小优点，它可以拥有多个可变参数。构造器跟方法一样只能有一个可变参数，而因为builder使用了不同的方法来设置每个参数，所以它可以拥有任意个数的可变参数，但最多是每个setter方法一个。
+
+Builder模式是很灵活的，单个builder可以用来创建多个对象。builder的参数可以在对象创建时调整，也可以随不同的对象而调整。builder还可以自动地填充某些属性的值，例如每次对象创建时自动递增的序列号。
+
+设置了参数的builder变成了一个很好的抽象工厂(Abstract Factory)[Gamma95, p. 87]。换而言之，客户可以给方法传递一个这样的builder，并且允许方法为客户创建一个或多个对象。想要使用这种用法的话你需要一个类型来表示builder，如果你正在使用JDK1.5或之后的版本，只要一个单一泛型就能满足所有的builder了，无需关心它们正在创建的类型：  
+
+```java
+// A builder for objects of type Tpublic interface Builder<T> {    public T build();}
+```
+
+注意，我们的`NutritionFacts.Builder`类可以声明为实现了`Builder<NutritionFacts>`接口。
+
