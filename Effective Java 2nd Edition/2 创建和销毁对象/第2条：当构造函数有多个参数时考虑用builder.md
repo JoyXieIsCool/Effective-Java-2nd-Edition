@@ -165,3 +165,11 @@ Builder模式是很灵活的，单个builder可以用来创建多个对象。bui
 
 注意，我们的`NutritionFacts.Builder`类可以声明为实现了`Builder<NutritionFacts>`接口。
 
+接收`Builder`实例的方法通常会利用有界通配符类型(bounded wildcard type，见第28条)来约束builder的类型参数。例如下面这个创建树的方法，它使用客户端提供的`Builder`实例来创建每个节点：  
+
+```java
+Tree buildTree(Builder<? extends Node> nodeBuilder) { ... }
+```
+
+Java中传统的抽象工厂实现是`Class`对象，使用`newInstance`方法充当`build`方法的角色。这种用法含有令人担忧的问题，`newInstance`方法总是尝试调用类的无参构造器，而它也许根本就不存在。如果类没有可访问的无参构造器，那么你无法得到一个编译期的报错，因此客户代码必须在运行期处理`InstantiationException`或`IllegalAccessException`，这非常丑陋且不方便。另外，`newInstance`方法会传播所有由无参构造器抛出的异常，即使`newInstance`缺少对应的`throws`声明语句。换而言之，**`Class.newInstance`打破了编译器异常检查。**而上面展示的`Builder`接口则弥补了这些不足。
+
