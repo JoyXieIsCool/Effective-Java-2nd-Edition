@@ -171,5 +171,8 @@ Builder模式是很灵活的，单个builder可以用来创建多个对象。bui
 Tree buildTree(Builder<? extends Node> nodeBuilder) { ... }
 ```
 
-Java中传统的抽象工厂实现是`Class`对象，使用`newInstance`方法充当`build`方法的角色。这种用法含有令人担忧的问题，`newInstance`方法总是尝试调用类的无参构造器，而它也许根本就不存在。如果类没有可访问的无参构造器，那么你无法得到一个编译期的报错，因此客户代码必须在运行期处理`InstantiationException`或`IllegalAccessException`，这非常丑陋且不方便。另外，`newInstance`方法会传播所有由无参构造器抛出的异常，即使`newInstance`缺少对应的`throws`声明语句。换而言之，**`Class.newInstance`打破了编译器异常检查。**而上面展示的`Builder`接口则弥补了这些不足。
+Java中传统的抽象工厂实现是`Class`对象，使用`newInstance`方法充当`build`方法的角色。这种用法含有令人担忧的问题，`newInstance`方法总是尝试调用类的无参构造器，而它也许根本就不存在。如果类没有可访问的无参构造器，那么你无法得到一个编译期的报错，因此客户代码必须在运行期处理`InstantiationException`或`IllegalAccessException`，这非常丑陋且不方便。另外，`newInstance`方法会传播所有由无参构造器抛出的异常，即使`newInstance`缺少对应的`throws`声明语句。换而言之，**`Class.newInstance`打破了编译期异常检查。**而上面展示的`Builder`接口则弥补了这些不足。
 
+Builder模式也存在自身的缺陷，为了创建一个对象，你必须先创建它的builder。虽然创建builder的开销在实践中可能不那么明显，但是在某些性能攸关的场景下可能会成为问题。另外，builder模式也比折叠构造器模式更冗长，所以应当在有足够多的参数时才使用它，例如说大于等于四个。但请记住，你将来有可能需要添加参数。如果一开始就使用构造器或静态工厂，并且当类变为参数个数不可控时才添加builder，那么那些无用的构造器和静态工厂就会显得别扭，因此通常最好一开始就使用builder。
+
+总而言之，**当设计一个类且它的构造器或静态工厂拥有许多个参数时，Builder是一个很好的选择**，尤其是大部分的参数还是可选的情况下。比起传统的折叠构造器模式，使用builder会使得客户代码更容易阅读和编写，并且它比JavaBeans更安全。
