@@ -12,3 +12,5 @@
 @Override public boolean equals(Object o) {    throw new AssertionError(); // Method is never called}
 ```
 
+所以什么时候应该覆盖`Object.equals`方法呢？如果类有逻辑相等(logical equality)的概念(不是对象相同)，并且它的父类没有覆盖`equals`方法来实现需要的行为，那么就需要覆盖`equals`方法。这通常是“值类”(value classes)的情形，一个值类简单来说就是代表一个值的类，例如`Integer`或`Date`。程序员使用`equals`方法来比较值对象的引用时，希望知道它们是否是逻辑相等的，而不关心它们是否指向同一个对象。覆盖`equals`方法不仅满足了程序员的需求，它也允许类的实例称为map的key、set的元素，并且符合可预期的行为。
+
