@@ -18,5 +18,11 @@
 
 当覆盖`equals`方法时，你必须遵守它的通用约定。下面是从`Object`的规范中[JavaSE6]引用的约定：  
 `equals`方法实现了一个相等关系，它是：  
-- ***自反性(Reflexive)***：对于任何非null的引用值x，`x.equals(x)`必须返回`true`。  
-- ***对称性(Symmetric)***：
+- ***自反性(Reflexive)***：对于任何非null的引用值x，`x.equals(x)`必须返回`true`。   
+- ***对称性(Symmetric)***：对于任何非null的引用值x和y，当且仅当`y.equals(x)`返回true时，`x.equals(y)`返回true。  
+- ***传递性(Transitive)***：对于任何非null的引用值x、y、z，若`x.equals(y)`返回true，且` y.equals(z)`返回true，那么`x.equals(z)`必须返回true。  
+- ***一致性(Consistent)***：对于任何非null的引用值x和y，只要`equals`的比较对象信息没有被修改，多次调用`x.equals(y)`必须一致地返回true或一致地返回false。
+- 对于任何非null的引用值x，`x.equals(null)`必须返回`false`。 
+
+除非你对数学很感兴趣，否则这些约定看起来有点吓人，但是绝对不要忽视它！如果你违反了它们，那么你会发现你的程序行为很不确定甚至崩溃，并且很难找到失败的源头。用John Donne的话说，没有一个类是孤岛。一个类的实例会频繁地传递给其他类的实例，包括集合类在内的很多类都依赖于传递给它们的对象是否遵守了`equals`约定。
+
