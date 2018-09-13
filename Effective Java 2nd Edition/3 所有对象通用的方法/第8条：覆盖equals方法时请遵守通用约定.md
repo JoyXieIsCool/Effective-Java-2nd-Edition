@@ -26,3 +26,32 @@
 
 除非你对数学很感兴趣，否则这些约定看起来有点吓人，但是绝对不要忽视它！如果你违反了它们，那么你会发现你的程序行为很不确定甚至崩溃，并且很难找到失败的源头。用John Donne的话说，没有一个类是孤岛。一个类的实例会频繁地传递给其他类的实例，包括集合类在内的很多类都依赖于传递给它们的对象是否遵守了`equals`约定。
 
+你已经清楚违反`equals`约定的危险了，现在我们继续深入了解这些约定的细节。好消息是，这些约定看起来很复杂，但实际上并没有看起来那么吓人。只要你理解了它，那么遵守它们并不困难。现在让我们逐个了解一下这5个要求：  
+
+- ***自反性(Reflexive)***：第一个要求仅仅说了对象必须等于它本身。很难想象会在无意中违反这个要求。假如你违反了这条约定并将类的实例添加到一个集合中，集合的`contains`方法会立即告诉你当前集合并不包含你刚刚添加的实例。  
+- ***对称性(Symmetric)***：第二条要求是任何两个对象必须对equals调用返回相同的结果。与第一个要求不同的是，并不难想象你会不小心违反它。例如考虑下面这个类，它实现了一个大小写敏感的string类，字符串由`toString`保存，但是在比较时忽略了：   
+
+```java
+// Broken - 违反了对称性！
+public final class CaseInsensitiveString {
+    private final String s;
+    public CaseInsensitiveString(String s) {
+        if (s == null)
+            throw new NullPointerException();
+        this.s = s;
+    }
+
+    // Broken - 违反了对称性！
+    @Override public boolean equals(Object o) {
+        if (o instanceof CaseInsensitiveString)
+            return s.equalsIgnoreCase(
+                ((CaseInsensitiveString) o).s);
+        if (o instanceof String)  // 单向可用(One-way interoperability)！
+            return s.equalsIgnoreCase((String) o);
+        return false;
+    }
+       
+    ...  // 其他方法忽略
+}
+```
+
