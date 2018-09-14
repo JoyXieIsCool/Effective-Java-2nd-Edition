@@ -55,3 +55,16 @@ public final class CaseInsensitiveString {
 }
 ```
 
+这个类中的`equals`方法意图是很好的，它企图简单地与普通字符串互相操作，假设我们有一个大小写不敏感的字符串和一个普通字符串：  
+
+```java
+CaseInsensitiveString cis = new CaseInsensitiveString("Polish"); 
+String s = "polish";
+```
+
+如预期的一样，`cis.equals(s)`返回`true`。但问题是，`CaseInsensitiveString`中的`equals`方法可以察觉到普通字符串，而`String`中的`equals`方法并不知道`CaseInsensitiveString`的存在。因此`s.equals(cis)`会返回`false`，这明显违反了对称性。假如你将一个大小写不敏感的`CaseInsensitiveString`字符串放入了一个集合：  
+
+```java
+List<CaseInsensitiveString> list =       new ArrayList<CaseInsensitiveString>();list.add(cis);
+```
+
