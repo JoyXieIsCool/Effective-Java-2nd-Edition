@@ -68,3 +68,5 @@ String s = "polish";
 List<CaseInsensitiveString> list =       new ArrayList<CaseInsensitiveString>();list.add(cis);
 ```
 
+此时`list.contains(s)`会返回什么结果呢？没有人知道。在Sun的当前实现中它刚好返回`false`，但这只是一个特定的实现。在其它的实现中，它可能会返回`true`或者抛出运行时异常。**一旦你违反了`equals`约定，当其它对象面对你的对象时，你完全不知道这些对象的行为会是什么样的。**
+
