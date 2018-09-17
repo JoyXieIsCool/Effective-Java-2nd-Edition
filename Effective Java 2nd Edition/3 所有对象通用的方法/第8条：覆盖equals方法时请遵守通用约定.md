@@ -70,3 +70,31 @@ List<CaseInsensitiveString> list =       new ArrayList<CaseInsensitiveString>()
 
 此时`list.contains(s)`会返回什么结果呢？没有人知道。在Sun的当前实现中它刚好返回`false`，但这只是一个特定的实现。在其它的实现中，它可能会返回`true`或者抛出运行时异常。**一旦你违反了`equals`约定，当其它对象面对你的对象时，你完全不知道这些对象的行为会是什么样的。**
 
+要解决这个问题只需要把企图与String互相操作的这段代码从`equals`方法中移除即可。只要你这么做了，你就可以重构这个方法让它成为一条单行的返回语句：  
+
+```java
+@Override public boolean equals(Object o) {    return o instanceof CaseInsensitiveString &&        ((CaseInsensitiveString) o).s.equalsIgnoreCase(s);}
+```
+
+- ***传递性(Transitive)***：`equals`约定的第三条要求是，如果一个对象等于第二个对象并且第二个对象等于第三个对象，那么第一个对象必须等于第三个对象。重申一下，无意识地违反这条规则的情况并不难以想象。考虑这样一种情况，子类添加了一个新的值组件(value component)到它的父类中，换句话说，子类添加了一块新的信息，它会影响`equals`的比较结果。我们先从一个简单的不可变的二维整数型Point类开始：  
+
+```java
+public class Point {
+    private final int x;
+    private final int y;
+    public Point(int x, int y) {
+	    this.x = x;
+	    this.y = y; 
+	}
+
+    @Override public boolean equals(Object o) {
+        if (!(o instanceof Point))
+            return false;
+        Point p = (Point)o;
+        return p.x == x && p.y == y;
+    }
+    ...  // Remainder omitted
+}
+```
+
+
