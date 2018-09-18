@@ -97,4 +97,29 @@ public class Point {
 }
 ```
 
+假设你想扩展这个类，给Point添加颜色的概念：  
+
+```java
+public class ColorPoint extends Point {
+    private final Color color;
+    public ColorPoint(int x, int y, Color color) {
+        super(x, y);
+        this.color = color;
+    }
+    ...  // Remainder omitted
+}
+```
+
+`equals`方法会怎样呢？如果你完全不管它，那么它会从`Point`类中继承并在`equals`比较时忽略颜色信息。虽然这没有违反`equals`约定，但明显是不可接受的。假设你写了一个`equals`方法，只有当它的参数是另一个颜色点且拥有与自身相同的位置和颜色时才返回`true`：  
+
+```java
+// Broken - violates symmetry!
+@Override public boolean equals(Object o) {
+    if (!(o instanceof ColorPoint))
+        return false;
+    return super.equals(o) && ((ColorPoint) o).color == color;
+}
+```
+
+
 
