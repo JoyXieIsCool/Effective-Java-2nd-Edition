@@ -121,5 +121,30 @@ public class ColorPoint extends Point {
 }
 ```
 
+这种方法的问题是，当你将一个普通点与一个颜色点比较时可能会得到不同的结果，反之亦然。前一种比较忽略了颜色信息，而后者则总是返回false，因为参数的类型不正确。为了清晰地说明这点，我们创建一个普通点和一个颜色点：  
 
+```java
+Point p = new Point(1, 2);ColorPoint cp = new ColorPoint(1, 2, Color.RED);
+```
+
+然后`p.equals(cp)`返回`true`，但`cp.equals(p)`返回`false`。你可能会想在做“混合比较”时在`ColorPoint.equals`中忽略颜色，并通过这种方式来解决这个问题：
+
+```java
+// Broken - violates transitivity!
+@Override public boolean equals(Object o) {
+    if (!(o instanceof Point))
+        return false;
+    // If o is a normal Point, do a color-blind comparison
+    if (!(o instanceof ColorPoint))
+        return o.equals(this);
+    // o is a ColorPoint; do a full comparison
+    return super.equals(o) && ((ColorPoint)o).color == color;
+}
+```
+
+这种方式确实满足了对称性，但牺牲了传递性：
+
+```java
+ColorPoint p1 = new ColorPoint(1, 2, Color.RED);Point p2 = new Point(1, 2);ColorPoint p3 = new ColorPoint(1, 2, Color.BLUE);
+```
 
