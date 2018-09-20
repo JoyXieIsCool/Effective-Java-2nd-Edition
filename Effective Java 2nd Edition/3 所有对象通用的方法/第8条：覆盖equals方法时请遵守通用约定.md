@@ -148,3 +148,20 @@ Point p = new Point(1, 2);ColorPoint cp = new ColorPoint(1, 2, Color.RED);
 ColorPoint p1 = new ColorPoint(1, 2, Color.RED);Point p2 = new Point(1, 2);ColorPoint p3 = new ColorPoint(1, 2, Color.BLUE);
 ```
 
+现在`p1.equals(p2)`和`p2.equals(p3)`都返回`true`，但是`p1.equals(p3)`返回`false`，这明显违反了传递性。前两种比较不考虑颜色信息，第三种则考虑了颜色。
+
+那么正确的方案是什么呢？其实这是面向对象语言中关于相等关系的一个基本问题。**你没有办法在扩展一个可实例化类的同时，既添加值组件又保持`equals`约定，**除非你愿意抛弃面向对象抽象带来的好处。
+
+你可能听说在扩展可实例化类并添加值组件时，在`equals`方法中使用`getClass`测试来取代`instanceof`测试，通过这种方式来保留`equals`约定：  
+
+```java
+// Broken - violates Liskov substitution principle (page 40)
+@Override public boolean equals(Object o) {
+    if (o == null || o.getClass() != getClass())
+        return false;
+    Point p = (Point) o;
+    return p.x == x && p.y == y;
+}
+```
+
+这使得只有当对象是相同实现类时才满足相等性，虽然这个方法看起来没有那么糟，但是结果却是无法接受的。
