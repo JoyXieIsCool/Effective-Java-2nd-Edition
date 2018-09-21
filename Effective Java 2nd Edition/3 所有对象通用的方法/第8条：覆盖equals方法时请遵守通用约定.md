@@ -165,3 +165,37 @@ ColorPoint p1 = new ColorPoint(1, 2, Color.RED);Point p2 = new Point(1, 2);Col
 ```
 
 这使得只有当对象是相同实现类时才满足相等性，虽然这个方法看起来没有那么糟，但是结果却是无法接受的。
+
+假设我们想写一个方法来判断一个整数点是否在单元环(unit circle)上，下面是一种可能的实现方式：  
+
+```java
+// Initialize UnitCircle to contain all Points on the unit circle private static final Set<Point> unitCircle;
+static {
+    unitCircle = new HashSet<Point>();
+    unitCircle.add(new Point( 1,  0));
+    unitCircle.add(new Point( 0,  1));
+    unitCircle.add(new Point(-1,  0));
+    unitCircle.add(new Point( 0, -1));
+}
+
+public static boolean onUnitCircle(Point p) {
+    return unitCircle.contains(p);
+}
+```
+
+虽然这可能不是实现这种功能的最快方式，但是它运行起来没有问题。假设你用某种微妙的方式扩展了`Point`类且没有添加值组件，比方说，在它的构造器中记录一共创建了多少个实例：  
+
+```java
+public class CounterPoint extends Point {
+    private static final AtomicInteger counter =
+        new AtomicInteger();
+        
+    public CounterPoint(int x, int y) {
+        super(x, y);
+        counter.incrementAndGet();
+    }
+    public int numberCreated() { return counter.get(); }
+}
+```
+
+里氏替换原则(Liskov substitution principle)认为，一个类型的任何重要属性也应该被它的子类持有，这样任何为该类所编写的方法在它的子类中也能同样地有效运行[Liskov87]。
