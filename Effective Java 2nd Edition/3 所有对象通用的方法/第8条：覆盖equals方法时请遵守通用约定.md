@@ -198,4 +198,36 @@ public class CounterPoint extends Point {
 }
 ```
 
-里氏替换原则(Liskov substitution principle)认为，一个类型的任何重要属性也应该被它的子类持有，这样任何为该类所编写的方法在它的子类中也能同样地有效运行[Liskov87]。
+里氏替换原则(Liskov substitution principle)认为，一个类型的任何重要属性也应该被它的子类持有，这样任何为该类所编写的方法在它的子类中也能同样地有效运行[Liskov87]。但是现在假设我们传递了一个`CounterPoint`实例给`onUnitCircle`方法，如果`Point`类使用了基于`getClass`的`equals`方法，那么无论`CounterPoint`实例的`x`和`y`值是什么，`onUnitCircle`方法都会返回`false`。这是因为`onUnitCircle`方法使用了像`HashSet`这样的集合来判断是否包含一个元素，并且没有任何`CounterPoint`实例等于任何一个`Point`实例。然而如果你在`Point`类中使用了合适的、基于`instanceof`的`equals`方法，那么同样的`onUnitCircle`方法在遇到`CounterPoint`实例时就能正常运行。
+
+虽然没有一种令人完全满意的方式来扩展可实例化类并添加值组件，但并不是没有变通方法。遵循第16条的建议，“组合优先于继承”(Favor composition over inheritance)。与其让`CounterPoint`继承`Point`，我们不如给`CounterPoint`一个私有的`Point`属性，并且添加一个公有的`view`方法(见第5条)返回一个与颜色点相同位置的普通点：  
+
+```java
+// Adds a value component without violating the equals contract
+public class ColorPoint {
+    private final Point point;
+    private final Color color;
+    public ColorPoint(int x, int y, Color color) {
+        if (color == null)
+            throw new NullPointerException();
+        point = new Point(x, y);
+        this.color = color;
+    }
+
+    /**
+     * Returns the point-view of this color point.
+     */
+    public Point asPoint() { 
+        return point;
+    }
+    
+    @Override public boolean equals(Object o) {
+        if (!(o instanceof ColorPoint))
+            return false;
+         ColorPoint cp = (ColorPoint) o;
+         return cp.point.equals(point) && cp.color.equals(color);
+    }
+    ...  // Remainder omitted
+}
+```
+
