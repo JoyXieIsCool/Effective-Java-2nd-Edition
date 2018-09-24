@@ -231,3 +231,5 @@ public class ColorPoint {
 }
 ```
 
+在Java平台的类库中，也有一些类扩展了可实例化的类并添加了值组件。例如，`java.sql.Timestamp`继承了`java.util.Date`且添加了一个`nanoseconds`属性。`Timestamp`的`equals`实现确实违反了对称性，并且当`Timestamp`和`Date`对象在同一个集合中使用或其他方式混合在一起时，则可能会造成不稳定的行为。`Timestamp`类有一个免责声明，提醒程序员不要混合使用`Date`和`Timestamp`对象。只要你将它们隔离开就不会遇到任何麻烦，但并没有什么方法可以阻止你这么做，而这导致的后果可能会难以调试。因此`Timestamp`类的行为是一个错误，并不值得模仿。
+
