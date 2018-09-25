@@ -18,6 +18,7 @@
 
 当覆盖`equals`方法时，你必须遵守它的通用约定。下面是从`Object`的规范中[JavaSE6]引用的约定：  
 `equals`方法实现了一个相等关系，它是：  
+
 - ***自反性(Reflexive)***：对于任何非null的引用值x，`x.equals(x)`必须返回`true`。   
 - ***对称性(Symmetric)***：对于任何非null的引用值x和y，当且仅当`y.equals(x)`返回true时，`x.equals(y)`返回true。  
 - ***传递性(Transitive)***：对于任何非null的引用值x、y、z，若`x.equals(y)`返回true，且` y.equals(z)`返回true，那么`x.equals(z)`必须返回true。  
@@ -232,4 +233,9 @@ public class ColorPoint {
 ```
 
 在Java平台的类库中，也有一些类扩展了可实例化的类并添加了值组件。例如，`java.sql.Timestamp`继承了`java.util.Date`且添加了一个`nanoseconds`属性。`Timestamp`的`equals`实现确实违反了对称性，并且当`Timestamp`和`Date`对象在同一个集合中使用或其他方式混合在一起时，则可能会造成不稳定的行为。`Timestamp`类有一个免责声明，提醒程序员不要混合使用`Date`和`Timestamp`对象。只要你将它们隔离开就不会遇到任何麻烦，但并没有什么方法可以阻止你这么做，而这导致的后果可能会难以调试。因此`Timestamp`类的行为是一个错误，并不值得模仿。
+
+注意，你可以给抽象类的子类添加一个值组件且不会违反`equals`约定。对于遵循第20条建议“类层次(class hierarchies)优于标签类(tagged class)”得到的类层次来说，这一点很重要。例如，你可以有一个抽象的`Shape`类，它不包含任何值组件，一个添加了`radius`属性的`Circle`子类，一个添加了`length`和`width`属性的`Rectangle`子类。由于无法直接创建父类实例，所以上面展示的问题都不会发生。
+
+- ***Consistency***—`equals`约定的第四个要求是：如果两个对象相等，那么它们必须一直保持相等，除非其中一个(或者两个)对象被修改了。换而言之，可变对象可以在不同时间等于不同的对象，而不可变对象则不能。当你编写一个类时，请仔细考虑它是否应该不可变(见第15条)。如果你的结论是它应该不可变，那就必须保证你的`equals`方法满足这种限制：所有相等对象一直保持相等，所有不相等对象一直保持不相等。
+
 
