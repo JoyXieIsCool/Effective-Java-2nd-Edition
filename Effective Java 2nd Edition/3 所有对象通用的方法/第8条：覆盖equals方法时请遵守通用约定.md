@@ -245,4 +245,11 @@ public class ColorPoint {
 @Override public boolean equals(Object o) {    if (o == null)        return false;    ...}
 ```
 
-这种判断是没有必要的。
+这种判断是没有必要的。为了测试它是否等于它的参数，`equals`方法必须先将它的参数转换为合适的类型，以便于调用它的访问器(accessors)或访问它的属性。在做这个类型转换之前，`equals`方法必须使用`instanceof`运算符检查参数是否是正确的类型：  
+
+```java
+@Override public boolean equals(Object o) {    if (!(o instanceof MyType))        return false;    MyType mt = (MyType) o;    ...}
+```
+
+如果缺少了这个类型检查且给`equals`方法传递了错误类型的参数，那么`equals`方法会抛出一个`ClassCastException`异常，而这违反了`equals`约定。由于`instanceof`运算符指定了当第一个操作数为`null`时，无论第二个操作数的类型是什么都必须返回`false`[JLS, 15.20.2]，因此如果传递给`equals`方法的参数为null时，类型检查会返回`false`，所以不需要单独的`null`检查。
+
